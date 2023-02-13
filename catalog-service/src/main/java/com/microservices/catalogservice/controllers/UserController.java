@@ -38,10 +38,11 @@ public class UserController {
         while (calendar.get(Calendar.YEAR) == year){
             calendar.set(Calendar.DAY_OF_MONTH,1);
             Date from = calendar.getTime();
+            calendar.add(Calendar.MONTH,1);
             calendar.set(Calendar.DAY_OF_MONTH,-1);
             Date to = calendar.getTime();
             Long count = (long) userRepository.findByCreatedDateBetween(from, to).size();
-            result.put(calendar.get(Calendar.MONTH),count);
+            result.put(calendar.get(Calendar.MONTH)+1,count);
             calendar.add(Calendar.MONTH,-1);
         }
         return ResponseEntity.ok(result);

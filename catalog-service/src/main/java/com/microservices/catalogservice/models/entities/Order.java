@@ -36,6 +36,7 @@ public class Order {
     @LastModifiedDate
     private Date updatedAt;
     private String status;
+    @Column(columnDefinition = "longtext")
     private String cartItems;
     private Double totals;
     private Boolean isDeleted = false;

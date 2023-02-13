@@ -31,7 +31,7 @@ public class CartController {
 
     @GetMapping("/user")
         public ResponseEntity<?> userCart(@RequestHeader("Authorization") String authentication){
-        User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+        User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
         if (user != null){
             CartDto cartDto = cartService.getUserCart(user.getEmail());
             return ResponseEntity.ok(cartDto);
@@ -42,7 +42,7 @@ public class CartController {
     @PostMapping("/addToCart")
     public ResponseEntity<?> addToCart(@RequestHeader("Authorization") String authentication,@RequestBody CartItem cartItem){
         try{
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             if (Boolean.FALSE.equals(redisTemplate.hasKey(userCode))){
@@ -70,7 +70,7 @@ public class CartController {
     @PostMapping("/updateCart")
     public ResponseEntity<?> updateCart(@RequestHeader("Authorization") String authentication, @RequestBody List<CartItem> cartItemList){
         try{
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             if (Boolean.FALSE.equals(redisTemplate.hasKey(userCode))){
@@ -92,7 +92,7 @@ public class CartController {
     @PostMapping("/deleteItem")
     public ResponseEntity<?> deleteItem(@RequestHeader("Authorization") String authentication,@RequestBody CartItem cartItem){
         try{
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             if (Boolean.FALSE.equals(redisTemplate.hasKey(userCode))){
@@ -115,7 +115,7 @@ public class CartController {
     @PostMapping("/updateItem")
     public ResponseEntity<?> updateItem(@RequestHeader("Authorization") String authentication,@RequestBody CartItem cartItem){
         try{
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             if (Boolean.FALSE.equals(redisTemplate.hasKey(userCode))){
@@ -143,7 +143,7 @@ public class CartController {
     @PostMapping("/clearCart")
     public ResponseEntity<?> clearCart(@RequestHeader("Authorization") String authentication){
         try{
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             if (Boolean.FALSE.equals(redisTemplate.hasKey(userCode))){

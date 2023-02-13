@@ -16,5 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserCodeAndIsDeletedIsFalse(String code);
     Order findByCodeAndIsDeletedIsFalse(String code);
 
-    List<Order> findByCreatedAtBetween(Date from, Date to);
+    List<Order> findByCreatedAtBetweenAndStatus(Date from, Date to,String status);
+    List<Order> findAllByIsDeletedIsFalse();
 }

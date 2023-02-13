@@ -8,6 +8,9 @@ import com.microservices.catalogservice.models.entities.user.User;
 import com.microservices.catalogservice.services.impl.AuthenticationService;
 import com.microservices.catalogservice.services.impl.CartServiceImpl;
 import com.microservices.catalogservice.services.impl.OrderService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,12 +34,15 @@ public class OrderController {
                                           @RequestParam(defaultValue = "3") int size){
         return ResponseEntity.ok(orderService.getAllOrder(PageRequest.of(page, size)));
     }
-
+    @GetMapping("/code/{code}")
+    public ResponseEntity<?> getOrderByCode(@PathVariable String code){
+        return ResponseEntity.ok(orderService.getByCode(code));
+    }
 
     @GetMapping("/user")
     public ResponseEntity<?> userCart(@RequestHeader("Authorization") String authentication){
         try {
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             return ResponseEntity.ok(orderService.getAllByUserCode(userCode));
@@ -47,7 +53,7 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestHeader("Authorization") String authentication, @RequestBody OrderDto order){
         try{
-            User user = authenticationService.getUserFromToken(authentication.replace("bearer ",""));
+            User user = authenticationService.getUserFromToken(authentication.replace("Bearer ",""));
             if (user == null) throw new Exception();
             String userCode = user.getEmail();
             CartDto cartDto = cartService.getUserCart(userCode);
@@ -87,10 +93,11 @@ public class OrderController {
         while (calendar.get(Calendar.YEAR) == year){
             calendar.set(Calendar.DAY_OF_MONTH,1);
             Date from = calendar.getTime();
+            calendar.add(Calendar.MONTH,1);
             calendar.set(Calendar.DAY_OF_MONTH,-1);
             Date to = calendar.getTime();
-            Long count = (long) orderService.findByCreatedDateBetween(from, to).size();
-            result.put(calendar.get(Calendar.MONTH),count);
+            Long income = (long) orderService.findByCreatedDateBetween(from, to).stream().mapToDouble(Order::getTotals).sum();
+            result.put(calendar.get(Calendar.MONTH)+1,income);
             calendar.add(Calendar.MONTH,-1);
         }
         return ResponseEntity.ok(result);
@@ -101,15 +108,23 @@ public class OrderController {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         HashMap<Integer,Long> result = new HashMap<>();
-        while (calendar.get(Calendar.YEAR) == year){
+        int i = 2;
+        while (i>0){
             calendar.set(Calendar.DAY_OF_MONTH,1);
             Date from = calendar.getTime();
+            calendar.add(Calendar.MONTH,1);
             calendar.set(Calendar.DAY_OF_MONTH,-1);
             Date to = calendar.getTime();
             Long income = (long) orderService.findByCreatedDateBetween(from, to).stream().mapToDouble(Order::getTotals).sum();
             result.put(calendar.get(Calendar.MONTH),income);
             calendar.add(Calendar.MONTH,-1);
+            i--;
         }
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/totalIncome")
+    public ResponseEntity<?> getTotalIncome(){
+        return ResponseEntity.ok(orderService.getTotalIncome());
+    }
+
 }

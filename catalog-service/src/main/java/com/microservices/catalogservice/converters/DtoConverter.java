@@ -12,6 +12,7 @@ import com.microservices.catalogservice.models.entities.Order;
 import com.microservices.catalogservice.models.entities.Product;
 import com.microservices.catalogservice.models.entities.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DtoConverter {
     private final ModelMapper modelMapper;
     public CategoryDto categoryEntityToDto(Category category){
@@ -35,10 +37,13 @@ public class DtoConverter {
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
         ObjectMapper mapper = new ObjectMapper();
         try {
-            orderDto.setCartItems(mapper.readValue(order.getCartItems(), new TypeReference<List<CartItemDto>>(){}));
-        }catch (Exception ignored){
+            List<CartItemDto> cartItemDtos = mapper.readValue(order.getCartItems(), new TypeReference<List<CartItemDto>>(){});
+            log.info(cartItemDtos.toString());
+            orderDto.setCartItems(cartItemDtos);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return modelMapper.map(order,OrderDto.class);
+        return orderDto;
     }
     public Order orderDtoToEntity(OrderDto orderDto){
 
