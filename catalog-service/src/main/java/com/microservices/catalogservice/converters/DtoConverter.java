@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +29,9 @@ public class DtoConverter {
     }
 
     public ProductDto productEntityToDto(Product product){
-        return modelMapper.map(product,ProductDto.class);
+        ProductDto productDto = modelMapper.map(product,ProductDto.class);
+        productDto.setCategoriesStr(productDto.getCategories().stream().map(CategoryDto::getName).collect(Collectors.joining(", ")));
+        return productDto;
     }
     public UserDto userEntityToDto(User user){
         return modelMapper.map(user,UserDto.class);

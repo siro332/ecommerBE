@@ -26,6 +26,7 @@ public class ProductInventoryService {
     private final ProductInventoryRepository productInventoryRepository;
     private final ProductAttributeRepository productAttributeRepository;
     private final ProductAttributeValueRepository productAttributeValueRepository;
+    private final ProductAttributeService productAttributeService;
 
 
     public List<ProductInventory> getAllProductInventory() {
@@ -75,5 +76,27 @@ public class ProductInventoryService {
 
     public ProductInventory save(ProductInventory productInventory){
         return productInventoryRepository.save(productInventory);
+    }
+
+    public ProductInventory update(ProductInventoryPojo productInventoryPojo) {
+        Optional<ProductInventory> productInventory = productInventoryRepository.findBySku(productInventoryPojo.getSku());
+        if (productInventory.isPresent()){
+            productAttributeValueRepository.deleteAll(productInventory.get().getProductAttributeValues());
+        };
+        Set<ProductAttributeValue> productAttributeValues = new HashSet<>();
+
+        for (var entry: productInventoryPojo.getAttributeValues().entrySet()
+        ) {
+            ProductAttributeValue productAttributeValue = productAttributeValueRepository.save(ProductAttributeValue.builder()
+                    .productAttribute(productAttributeRepository.findById(entry.getKey().longValue()).get())
+                    .attributeValue(entry.getValue())
+                    .code("PAB" + Utils.uuidToBase64(UUID.randomUUID()))
+                    .build());
+            productAttributeValues.add(productAttributeValue);
+        }
+        productInventory.get().setUnits(productInventoryPojo.getUnits());
+        productInventory.get().setRetailPrice(productInventoryPojo.getRetailPrice().doubleValue());
+        productInventory.get().setProductAttributeValues(productAttributeValues);
+        return productInventoryRepository.save(productInventory.get());
     }
 }

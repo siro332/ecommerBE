@@ -18,6 +18,7 @@ public class ProductDto {
     private Date createdAt;
     private Date updatedAt;
     private String description;
+    private String categoriesStr;
     private Set<CategoryDto> categories;
     private List<Media> mediaList;
     private String imgUrl;

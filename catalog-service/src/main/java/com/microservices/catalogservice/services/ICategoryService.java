@@ -9,6 +9,7 @@ import java.util.Set;
 
 public interface ICategoryService {
     List<CategoryDto> getAllCategories();
+    List<CategoryDto> getAllCategoriesNotGrouping();
     Optional<CategoryDto> getCategoryByCode(String code);
     Set<Category> getListCategoryByCode(Set<String> categoryCodeList);
     Category addCategory(Category category);

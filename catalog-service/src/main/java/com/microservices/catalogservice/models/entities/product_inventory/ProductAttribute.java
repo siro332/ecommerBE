@@ -18,4 +18,5 @@ public class ProductAttribute {
     private String name;
     @Nationalized
     private String description;
+    private Boolean isActive = true;
 }

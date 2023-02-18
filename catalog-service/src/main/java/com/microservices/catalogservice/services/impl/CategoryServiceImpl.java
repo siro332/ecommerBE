@@ -46,6 +46,17 @@ public class CategoryServiceImpl implements ICategoryService {
         }
         return rootCategories;
     }
+    @Override
+    public List<CategoryDto> getAllCategoriesNotGrouping() {
+        List<CategoryDto> categories = categoryRepository.findByIsActiveIsTrue().stream().map(dtoConverter::categoryEntityToDto).collect(Collectors.toList());
+        categories.forEach(categoryDto -> {
+            List<Media> mediaList = mediaService.getMediaByCode(categoryDto.getCode());
+            if (mediaList.size() > 0)
+                categoryDto.setImgUrl(mediaList.get(0).getImgUrl());
+            categoryDto.setMediaList(mediaList);
+        });
+        return categories;
+    }
 
     @Override
     public Optional<CategoryDto> getCategoryByCode(String code) {
@@ -94,6 +105,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setCreatedAt(new Date());
         UUID uuid = UUID.randomUUID();
         category.setCode("CT" + Utils.uuidToBase64(uuid));
+        category.setIsActive(true);
         return categoryRepository.save(category);
     }
 

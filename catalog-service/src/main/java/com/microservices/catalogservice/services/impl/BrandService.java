@@ -26,11 +26,11 @@ public class BrandService {
     private final BrandRepository brandRepository;
 
     public List<Brand> getAllBrand() {
-        return brandRepository.findAll();
+        return brandRepository.findAllByIsActiveIsTrue();
     }
 
     public Optional<Brand> getBrandByCode(String code){
-        return brandRepository.findByCode(code);
+        return brandRepository.findByCodeAndIsActiveIsTrue(code);
     }
 
     public Optional<Brand> getBrandById(Long id){
@@ -38,11 +38,11 @@ public class BrandService {
     }
 
     public Optional<Brand> getBrandByName(String name){
-        return brandRepository.findByName(name);
+        return brandRepository.findByNameAndIsActiveIsTrue(name);
     }
 
     public Brand addBrand(Brand brand){
-        Optional<Brand> exitedBrand = brandRepository.findByName(brand.getName());
+        Optional<Brand> exitedBrand = brandRepository.findByNameAndIsActiveIsTrue(brand.getName());
         if (exitedBrand.isPresent()){
             return exitedBrand.get();
         }else {
@@ -53,4 +53,12 @@ public class BrandService {
         }
     }
 
+    public void remove(String code) {
+        Optional<Brand> optionalBrand = brandRepository.findByCodeAndIsActiveIsTrue(code);
+        if (optionalBrand.isPresent()) {
+            Brand brand = optionalBrand.get();
+            brand.setIsActive(false);
+            brandRepository.save(brand);
+        }
+    }
 }

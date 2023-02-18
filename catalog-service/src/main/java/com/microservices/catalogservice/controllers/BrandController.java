@@ -28,4 +28,15 @@ public class BrandController {
         Brand brand = brandService.getBrandById(id).get();
         return ResponseEntity.ok().body(brand);
     }
+    @PostMapping("/add")
+    public ResponseEntity<?> addBrand(@RequestBody Brand brand){
+        brand.setIsActive(true);
+        Brand newBrand = brandService.addBrand(brand);
+        return ResponseEntity.ok(newBrand);
+    }
+    @PostMapping("/delete/{code}")
+    public ResponseEntity<?> removeBrand(@PathVariable String code){
+        brandService.remove(code);
+        return ResponseEntity.ok().body("");
+    }
 }

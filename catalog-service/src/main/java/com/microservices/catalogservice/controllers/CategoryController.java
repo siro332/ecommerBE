@@ -29,7 +29,7 @@ public class CategoryController {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("/{code}")
+    @GetMapping("/category/{code}")
     public CategoryDto getCategoryByCode(@PathVariable String code) {
         return categoryService.getCategoryByCode(code)
                 .orElseThrow(() -> new CategoryNotFoundException("Category with code [" + code + "] doesn't exist"));
@@ -80,4 +80,9 @@ public class CategoryController {
         }
         return ResponseEntity.ok(list);
     }
+    @GetMapping("/all-category")
+    public List<CategoryDto> getAllCategoriesNotGrouping() {
+        return categoryService.getAllCategoriesNotGrouping();
+    }
+
 }

@@ -18,4 +18,5 @@ public class Brand {
     @Nationalized
     private String name;
     private Date createdAt;
+    private Boolean isActive = true;
 }

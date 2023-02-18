@@ -47,7 +47,7 @@ public class ProductServiceImpl implements IProductService {
             Product newProduct = Product.builder()
                     .name(form.getName())
                     .code(productCode)
-                    .isActive(form.getIsActive())
+                    .isActive(true)
                     .createdAt(new Date())
                     .description(form.getDescription())
                     .brand(brand)
@@ -74,10 +74,16 @@ public class ProductServiceImpl implements IProductService {
                 Product product = optionalProduct.get();
                 product.setCategories(categories);
                 product.setUpdatedAt(new Date());
+                product.setIsActive(true);
                 product.setIsActive(form.getIsActive());
                 product.setName(form.getName());
                 product.setDescription(form.getDescription());
-                return productRepository.save(product);
+                productRepository.save(product);
+                for (ProductInventoryPojo productInventoryPojo: form.getProductInventoryPojos()
+                ) {
+                    productInventoryService.update(productInventoryPojo);
+                }
+                return productRepository.findById(product.getId()).get();
             }else{
                 log.error("Product with code: "+form.getCode()+" not found!");
                 throw new Exception();
