@@ -5,6 +5,7 @@ import com.microservices.catalogservice.converters.DtoConverter;
 import com.microservices.catalogservice.models.dtos.ProductDto;
 import com.microservices.catalogservice.models.entities.Category;
 import com.microservices.catalogservice.models.entities.Media;
+import com.microservices.catalogservice.models.entities.Order;
 import com.microservices.catalogservice.models.entities.Product;
 import com.microservices.catalogservice.models.entities.product_inventory.Brand;
 import com.microservices.catalogservice.models.entities.product_inventory.ProductInventory;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -110,6 +112,23 @@ public class ProductServiceImpl implements IProductService {
     public Page<ProductDto> searchProduct(String productName, String categoryCode, long lowestPrice, long highestPrice, String brandName, Pageable pageable) {
         List<Product> productList = productRepository.search(productName,categoryCode,lowestPrice,highestPrice,brandName);
         List<ProductDto> productDtoList = productList.stream().map(this::getProductDetails).collect(Collectors.toList());
+        Sort.Order order = pageable.getSort().stream().findFirst().get();
+        switch (order.getProperty()){
+            case "name":
+                if (order.getDirection().isAscending()){
+                    productDtoList.sort(Comparator.comparing(ProductDto::getName));
+                }
+                else {
+                    productDtoList.sort(Comparator.comparing(ProductDto::getName).reversed());
+                }
+            case "price":
+                if (order.getDirection().isAscending()){
+                    productDtoList.sort(Comparator.comparing(ProductDto::getPrice));
+                }
+                else {
+                    productDtoList.sort(Comparator.comparing(ProductDto::getPrice).reversed());
+                }
+        }
         final int start = (int)pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), productList.size());
         Page<ProductDto> productPage = new PageImpl<>(productDtoList.subList(start, end), pageable, productDtoList.size());
