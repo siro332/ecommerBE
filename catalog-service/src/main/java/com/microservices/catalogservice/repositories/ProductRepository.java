@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Optional<Product> findByCodeAndIsActiveIsTrue(String code);
+    Optional<Product> findByIdAndIsActiveIsTrue(Long id);
     Page<Product> findByIsActiveIsTrue(Pageable pageable);
     Page<Product> findByCategoriesContainsAndIsActiveIsTrue(Category category, Pageable pageable);
     List<Product> findByCategoriesContainsAndIsActiveIsTrue(Category category);

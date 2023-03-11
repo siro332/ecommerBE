@@ -9,12 +9,10 @@ import com.microservices.catalogservice.models.entities.product_inventory.Produc
 import com.microservices.catalogservice.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +29,11 @@ public class OrderService {
         Order order = dtoConverter.orderDtoToEntity(orderDto);
         UUID uuid =UUID.randomUUID();
         order.setCode("OD"+ Utils.uuidToBase64(uuid));
-        order.setStatus("pending");
+        if (order.getPaymentMethod().equals("paid")){
+            order.setStatus("approved");
+        }else {
+            order.setStatus("pending");
+        }
         order.setCreatedAt(new Date());
         return orderRepository.save(order);
     }

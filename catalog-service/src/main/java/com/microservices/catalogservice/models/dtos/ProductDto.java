@@ -1,6 +1,7 @@
 package com.microservices.catalogservice.models.dtos;
 
 import com.microservices.catalogservice.models.entities.Media;
+import com.microservices.catalogservice.models.entities.Review;
 import com.microservices.catalogservice.models.entities.product_inventory.Brand;
 import com.microservices.catalogservice.models.entities.product_inventory.ProductInventory;
 import lombok.Data;
@@ -26,4 +27,6 @@ public class ProductDto {
     private long price;
     private Brand brand;
     private Set<ProductInventory> productInventories;
+    private Set<Review> reviews;
+    private Integer score;
 }

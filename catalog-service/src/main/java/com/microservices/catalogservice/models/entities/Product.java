@@ -51,5 +51,10 @@ public class Product {
     @JsonBackReference
     @JsonIgnore
     private Brand brand;
+    @OneToMany
+    @JoinColumn(name="product_id")
+    @JsonManagedReference
+    private Set<Review> reviews;
+
 
 }

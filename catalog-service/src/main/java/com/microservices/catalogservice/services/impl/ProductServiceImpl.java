@@ -5,8 +5,8 @@ import com.microservices.catalogservice.converters.DtoConverter;
 import com.microservices.catalogservice.models.dtos.ProductDto;
 import com.microservices.catalogservice.models.entities.Category;
 import com.microservices.catalogservice.models.entities.Media;
-import com.microservices.catalogservice.models.entities.Order;
 import com.microservices.catalogservice.models.entities.Product;
+import com.microservices.catalogservice.models.entities.Review;
 import com.microservices.catalogservice.models.entities.product_inventory.Brand;
 import com.microservices.catalogservice.models.entities.product_inventory.ProductInventory;
 import com.microservices.catalogservice.models.pojo.ProductInventoryPojo;
@@ -39,6 +39,7 @@ public class ProductServiceImpl implements IProductService {
     private final CategoryServiceImpl categoryService;
     private final MediaServiceImpl mediaService;
     private final DtoConverter dtoConverter;
+    private final ReviewService reviewService;
     @Override
     public Product createProduct(ProductPojo form) {
         try {
@@ -147,6 +148,17 @@ public class ProductServiceImpl implements IProductService {
        return Optional.empty();
     }
 
+    public Optional<ProductDto> getProductDtoById(Long id) {
+        Optional<Product> optionalProduct = productRepository.findByIdAndIsActiveIsTrue(id);
+        if (optionalProduct.isPresent()) {
+            log.info("Fetching media for product_id: " + id);
+            Product product = optionalProduct.get();
+            ProductDto productDto = getProductDetails(product);
+            return Optional.of(productDto);
+        }
+        return Optional.empty();
+    }
+
     public Optional<Product> getProductByCode(String code) {
         Optional<Product> optionalProduct = productRepository.findByCodeAndIsActiveIsTrue(code);
         if (optionalProduct.isPresent()) {
@@ -214,6 +226,11 @@ public class ProductServiceImpl implements IProductService {
             if (mediaList.size()>0)
                 productDto.setImgUrl(mediaList.get(0).getImgUrl());
 //            productDto.setInventoryList(productInventories);
+            if (product.getReviews().size()>0){
+                productDto.setScore((int) product.getReviews().stream().mapToLong(Review::getScore).average().getAsDouble());
+            }else {
+                productDto.setScore(0);
+            }
            productDto.setTotalUnitSold(product.getProductInventories().stream().mapToLong(ProductInventory::getUnitSold).sum());
         productDto.setPrice((long) product.getProductInventories().stream().mapToDouble(ProductInventory::getRetailPrice).min().orElse(0));
         return productDto;

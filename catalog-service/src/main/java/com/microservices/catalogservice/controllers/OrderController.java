@@ -2,18 +2,13 @@ package com.microservices.catalogservice.controllers;
 
 import com.microservices.catalogservice.models.dtos.CartDto;
 import com.microservices.catalogservice.models.dtos.OrderDto;
-import com.microservices.catalogservice.models.entities.Cart;
 import com.microservices.catalogservice.models.entities.Order;
 import com.microservices.catalogservice.models.entities.user.User;
 import com.microservices.catalogservice.services.impl.AuthenticationService;
 import com.microservices.catalogservice.services.impl.CartServiceImpl;
 import com.microservices.catalogservice.services.impl.OrderService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
