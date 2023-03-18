@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,11 @@ public class OrderService {
     public OrderDto getByCode(String code){
         log.info(orderRepository.findByCodeAndIsDeletedIsFalse(code).toString());
         return dtoConverter.orderEntityToDto(orderRepository.findByCodeAndIsDeletedIsFalse(code));
+    };
+
+    public Optional<OrderDto> getById(Long id){
+        Optional<Order> optionalOrder = orderRepository.findByIdAndIsDeletedIsFalse(id);
+        return optionalOrder.map(dtoConverter::orderEntityToDto);
     };
 
     public OrderDto changeStatus(String code, String status){

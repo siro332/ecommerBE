@@ -55,6 +55,6 @@ public class Product {
     @JoinColumn(name="product_id")
     @JsonManagedReference
     private Set<Review> reviews;
-
-
+    @Builder.Default
+    private Integer warrantyPeriod = 1;
 }

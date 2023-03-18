@@ -54,7 +54,9 @@ public class ProductServiceImpl implements IProductService {
                     .createdAt(new Date())
                     .description(form.getDescription())
                     .brand(brand)
-                    .categories(categories).build();
+                    .categories(categories)
+                    .warrantyPeriod(form.getWarrantyPeriod()!=null? form.getWarrantyPeriod() : 1)
+                    .build();
             newProduct = productRepository.save(newProduct);
             for (ProductInventoryPojo productInventoryPojo: form.getProductInventoryPojos()
                  ) {
@@ -81,6 +83,7 @@ public class ProductServiceImpl implements IProductService {
                 product.setIsActive(form.getIsActive());
                 product.setName(form.getName());
                 product.setDescription(form.getDescription());
+                product.setWarrantyPeriod(form.getWarrantyPeriod()!=null? form.getWarrantyPeriod() : product.getWarrantyPeriod());
                 productRepository.save(product);
                 for (ProductInventoryPojo productInventoryPojo: form.getProductInventoryPojos()
                 ) {

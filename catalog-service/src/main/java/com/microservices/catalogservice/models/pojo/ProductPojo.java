@@ -3,8 +3,6 @@ package com.microservices.catalogservice.models.pojo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Set;
 
 @Data
@@ -17,4 +15,5 @@ public class ProductPojo {
     private String categoryCode;
     private Integer brandId;
     private Set<ProductInventoryPojo> productInventoryPojos;
+    private Integer warrantyPeriod;
 }

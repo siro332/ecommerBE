@@ -29,4 +29,5 @@ public class ProductDto {
     private Set<ProductInventory> productInventories;
     private Set<Review> reviews;
     private Integer score;
+    private Integer warrantyPeriod;
 }
